@@ -1,0 +1,25 @@
+{
+    "git.ignoreLimitWarning": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[typescript]": {
+      "editor.formatOnSave": true,
+      "editor.codeActionsOnSave": {
+        // "source.fixAll": true
+        "source.fixAll.eslint": true
+        // "source.organizeImports": true
+      },
+      "editor.tabSize": 2
+    },
+    "sqltools.connections": [
+      {
+        "previewLimit": 50,
+        "server": "localhost",
+        "port": 5432,
+        "askForPassword": true,
+        "driver": "PostgreSQL",
+        "name": "local",
+        "username": "postgres",
+        "database": "postgres"
+      }
+    ]
+  }
