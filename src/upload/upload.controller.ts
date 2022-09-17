@@ -4,10 +4,11 @@ import {
   Inject,
   Param,
   Post,
+  Query,
   Req,
   Res,
 } from '@nestjs/common';
-import { ImageSize, UploadImageDto } from './dto/uploadImage.dto';
+import { ImageSize } from './enum/imageEnum.enum';
 import { UploadService } from './upload.service';
 import { Request, Response } from 'express';
 import * as sharp from 'sharp';
@@ -21,25 +22,28 @@ export class UploadController {
   async upload(
     @Req() req: Request,
     @Res() res: Response,
-    @Body() body: UploadImageDto,
     @Param('filename') filename: string,
+    @Query('size') size: ImageSize,
   ) {
     const headers = req.headers;
+    let buffer = req.read();
 
-    if (headers['type'] != 'image') {
+    if (headers['content-type']?.split('/')[0] != 'image') {
       return res.status(400).json({ error: 'Please upload an image' });
     }
 
-    let size = [300, 300];
-    if (body.size === ImageSize.LARGE) {
-      size = [2048, 2048];
+    let dimensions = [300, 300];
+    if (size === ImageSize.LARGE) {
+      dimensions = [2048, 2048];
     }
 
-    if (body.size === ImageSize.MEDIUM) {
-      size = [1024, 1024];
+    if (size === ImageSize.MEDIUM) {
+      dimensions = [1024, 1024];
     }
 
-    const buffer = await sharp(body?.path).resize(size[0], size[1]).toBuffer();
+    buffer = await sharp(buffer)
+      .resize(dimensions[0], dimensions[1])
+      .toBuffer();
 
     await this.uploadService.uploadedImage(buffer, filename);
 
