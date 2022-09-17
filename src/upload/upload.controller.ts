@@ -1,9 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
   Inject,
   Param,
-  Post,
   Query,
   Req,
   Res,
@@ -18,7 +18,7 @@ export class UploadController {
   @Inject(UploadService)
   public uploadService: UploadService;
 
-  @Post('/:filename')
+  @Get('/:filename')
   async upload(
     @Req() req: Request,
     @Res() res: Response,
