@@ -8,7 +8,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { ImageSize } from './enum/imageEnum.enum';
+import { ImageSize, ImageType } from './enum/imageEnum.enum';
 import { UploadService } from './upload.service';
 import { Request, Response } from 'express';
 import * as sharp from 'sharp';
@@ -27,9 +27,14 @@ export class UploadController {
   ) {
     const headers = req.headers;
     let buffer = req.read();
+    const type = headers['content-type']?.split('/');
 
-    if (headers['content-type']?.split('/')[0] != 'image') {
+    if (type[0] != 'image') {
       return res.status(400).json({ error: 'Please upload an image' });
+    }
+
+    if (type[1] != (ImageType.JPEG || ImageType.PNG)) {
+      return res.status(400).json({ error: 'Please upload a jpeg or png' });
     }
 
     let dimensions = [300, 300];
@@ -45,7 +50,7 @@ export class UploadController {
       .resize(dimensions[0], dimensions[1])
       .toBuffer();
 
-    await this.uploadService.uploadedImage(buffer, filename);
+    await this.uploadService.uploadedImage(buffer, filename, type[1]);
 
     return res.status(200).json({ message: 'Image uploaded successfully' });
   }
