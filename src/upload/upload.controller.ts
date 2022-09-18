@@ -23,7 +23,7 @@ export class UploadController {
     @Req() req: Request,
     @Res() res: Response,
     @Param('filename') filename: string,
-    @Query('size') size: ImageSize,
+    @Query('size') size: string,
   ) {
     const headers = req.headers;
     let buffer = req.read();
@@ -37,8 +37,8 @@ export class UploadController {
       return res.status(400).json({ error: 'Please upload a jpeg or png' });
     }
 
-    if (size != (ImageSize.THUMBNAIL || ImageSize.MEDIUM || ImageSize.LARGE)) {
-      return res.status(400).json({ error: 'Please select a valid size' });
+    if (!size) {
+      return res.status(400).json({ error: 'Please select image size' });
     }
 
     let dimensions = [300, 300];
@@ -54,7 +54,8 @@ export class UploadController {
       .resize(dimensions[0], dimensions[1])
       .toBuffer();
 
-    await this.uploadService.uploadedImage(buffer, filename, type[1]);
+    const a = await this.uploadService.uploadedImage(buffer, filename, type[1]);
+    console.log(a);
 
     return res.status(200).json({ message: 'Image uploaded successfully' });
   }
