@@ -37,6 +37,10 @@ export class UploadController {
       return res.status(400).json({ error: 'Please upload a jpeg or png' });
     }
 
+    if (size != (ImageSize.THUMBNAIL || ImageSize.MEDIUM || ImageSize.LARGE)) {
+      return res.status(400).json({ error: 'Please select a valid size' });
+    }
+
     let dimensions = [300, 300];
     if (size === ImageSize.LARGE) {
       dimensions = [2048, 2048];
