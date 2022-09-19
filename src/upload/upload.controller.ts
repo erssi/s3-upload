@@ -54,8 +54,7 @@ export class UploadController {
       .resize(dimensions[0], dimensions[1])
       .toBuffer();
 
-    const a = await this.uploadService.uploadedImage(buffer, filename, type[1]);
-    console.log(a);
+    await this.uploadService.uploadedImage(buffer, filename, type[1]);
 
     return res.status(200).json({ message: 'Image uploaded successfully' });
   }
